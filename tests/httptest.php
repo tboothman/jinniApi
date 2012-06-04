@@ -2,8 +2,8 @@
 require_once "../http.php";
 
 class testHttp extends \jinni\http {
-    function _parseSearchResults($result) {
-        return $this->parseSearchResults($result);
+    function _parseSearcSuggestionhResults($result) {
+        return $this->parseSearchSuggestionResults($result);
     }
     function _buildApiParamString($params) {
         return $this->buildApiParamString($params);
@@ -46,7 +46,7 @@ class httptest extends PHPUnit_Framework_TestCase {
         $this->assertEquals("string:test", self::$http->_buildParamVar("test"));
     }
 
-    public function testParseSearchResults() {
+    public function testParseSearchSuggestionResults() {
         $resultStr = <<<EOD
 //#DWR-INSERT
 //#DWR-REPLY
@@ -69,7 +69,7 @@ s15.categoryType=null;s15.contentType='ShortFilm';s15.entityType='Title';s15.id=
 s16.categoryType=null;s16.contentType='ShortFilm';s16.entityType='Title';s16.id=40879;s16.name="The Animatrix: Program";s16.popularity=null;s16.year=2003;
 dwr.engine._remoteHandleCallback('1','0',{criteria:s0,results:s1,suggestTime:0.080071});
 EOD;
-        $results = self::$http->_parseSearchResults($resultStr);
+        $results = self::$http->_parseSearcSuggestionhResults($resultStr);
         $this->assertTrue(count($results) == 10);
         $this->assertEquals(array('contentType' => 'FeatureFilm', 'id' => 191, 'name' => 'The Matrix', 'year' => 1999), $results[0]);
         $this->assertEquals(array('contentType' => 'FeatureFilm', 'id' => 192, 'name' => 'The Matrix Reloaded', 'year' => 2003), $results[1]);
@@ -90,7 +90,7 @@ s6[0]="KSTST";
 
 dwr.engine._remoteHandleCallback('12','0',{criteria:s0,results:s1,suggestTime:0.016569});
 EOD;
-        $results = self::$http->_parseSearchResults($resultStr);
+        $results = self::$http->_parseSearcSuggestionhResults($resultStr);
         $this->assertTrue(count($results) == 0);
 
 
@@ -117,7 +117,7 @@ s15.categoryType=null;s15.contentType='FeatureFilm';s15.entityType='Title';s15.i
 s16.categoryType=null;s16.contentType=null;s16.entityType='Person';s16.id=31480;s16.name="Maurice Ransford";s16.popularity=null;s16.year=0;
 dwr.engine._remoteHandleCallback('3','0',{criteria:s0,results:s1,suggestTime:0.047661});
 EOD;
-        $results = self::$http->_parseSearchResults($resultStr);
+        $results = self::$http->_parseSearcSuggestionhResults($resultStr);
         $this->assertTrue(count($results) == 8);
         $this->assertEquals(array('contentType' => 'FeatureFilm', 'id' => 8727, 'name' => 'The Informer', 'year' => 1935), $results[7]);
     }
@@ -148,6 +148,9 @@ dwr.engine._remoteHandleCallback('0','0',{likelyOrNotInterested:null,rate:9.0,ra
 
         $result = static::$http->_createCachePath('/test');
         $this->assertEquals(self::$testCache.'/test', $result);
+
+        $result = static::$http->_createCachePath('/discovery.html?query=the%20matrix%201999&content=Movies');
+        $this->assertEquals(self::$testCache.'/discovery.htmlquery=the%20matrix%201999&content=Movies', $result);
     }
 
     public function testJsDecode() {

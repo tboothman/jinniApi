@@ -118,6 +118,10 @@ class film {
         return $this->imdb;
     }
 
+    public function setImdb($imdb) {
+        $this->imdb = (int)$imdb;
+    }
+
     protected function getInfo() {
         $content = $this->http->getPage('/movies/'.$this->getUrlName(), null, true);
         if (preg_match('@"http://www.imdb.com/title/tt(\d+)"@', $content, $matches)) {

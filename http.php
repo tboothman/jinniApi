@@ -59,7 +59,7 @@ class http {
     protected function createCachePath($path) {
         $path = trim($path,'/');
         $parts = explode('/', $path);
-        $filename = array_pop($parts);
+        $filename = str_replace(array("\\",'/',':','*','?','"','<','>','|'),'',array_pop($parts));
         $filePath = $this->cacheFolder . '/';
         while ($thisFolder = array_shift($parts)) {
             $filePath .= str_replace(array("\\",'/',':','*','?','"','<','>','|'),'',$thisFolder) . '/';
@@ -115,12 +115,12 @@ class http {
      * @return array()
      * @see parseSearchResults()
      */
-    public function search($searchStr, $type = null) {
+    public function searchSuggestions($searchStr, $type = null) {
         if (null !== $type && !film::validContentType($type)) {
             throw new \Exception('Invalid content type: '.$type);
         }
         $return = $this->rawApiCall('AjaxController', 'findSuggestionsWithFilters', array($searchStr, (object)array('contentTypeFilter' => $type)));
-        return $this->parseSearchResults($return);
+        return $this->parseSearchSuggestionResults($return);
     }
 
     protected function rawApiCall($scriptName, $method, array $params = array()) {
@@ -170,7 +170,7 @@ class http {
         }
     }
 
-    protected function parseSearchResults($str) {
+    protected function parseSearchSuggestionResults($str) {
         if (0 == preg_match("@dwr.engine._remoteHandleCallback\(\'\d+\',\'\d+\',\{criteria:s0,results:([^,]+),@", $str, $matches)) {
             throw new \Exception('Could not parse API result');
         }

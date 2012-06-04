@@ -8,17 +8,24 @@ class testJinni extends \jinni\jinni {
     function _getNextRatingPagePostData($page) {
         return $this->getNextRatingPagePostData($page);
     }
+    function _getFilmsFromSearchResults($page) {
+        return $this->getFilmsFromSearchResults($page);
+    }
 }
 
 class jinnitest extends PHPUnit_Framework_TestCase {
     public static $jinni;
     public static $ratingsPage;
     public static $finalRatingsPage;
+    public static $testCache;
+    public static $searchResultsPage;
 
     public static function setUpBeforeClass() {
-        self::$jinni = new testJinni('DJMcTom','');
+        self::$testCache = realpath(dirname(__FILE__).'/testcache');
+        self::$jinni = new testJinni('username', self::$testCache);
         self::$ratingsPage = file_get_contents("ratings.htm", true);
         self::$finalRatingsPage = file_get_contents("finalratings.htm", true);
+        self::$searchResultsPage = file_get_contents(self::$testCache.'/discovery.htmlquery=the+matrix&content=Movies', true);
     }
 
     public function testRatingPageParsing() {
@@ -73,18 +80,23 @@ class jinnitest extends PHPUnit_Framework_TestCase {
         $this->assertEquals(false, $postData);
     }
 
-    public function testgetRatings() {
-        //$result = self::$jinni->getRatings();
-        //var_export($result);
-        //$page = self::$jinni->getPage('/user/DJMcTom/ratings/',"javax.faces.ViewState=j_id52260%3Aj_id52261&userRatingForm=userRatingForm&userRatingForm:j_id269=idx2&userRatingForm:j_id269idx2=userRatingForm%3Aj_id269idx2");
-//        var_export(self::$jinni->getPage('/user/DJMcTom/ratings/'));
-//        $page = self::$jinni->getPage('/user/DJMcTom/ratings/',array(
-//            'javax.faces.ViewState' => 'j_id52260:j_id52261',
-//            'userRatingForm'        => 'userRatingForm',
-//            "userRatingForm:j_id269" => "idx2",
-//            "userRatingForm:j_id269idx2" =>	"userRatingForm:j_id269idx2"
-//        ));
+    public function testSearch2() {
+        $films = self::$jinni->search2('the matrix', \jinni\film::CONTENT_FILM);
 
-        //var_dump($page);
+        $this->assertTrue(count($films) == 22);
+
+        $this->assertEquals("the-matrix", $films[0]->urlName);
+        $this->assertEquals("The Matrix", $films[0]->getName());
+        $this->assertEquals(191, $films[0]->getFilmId());
+        $this->assertEquals(133093, $films[0]->getImdb());
+        $this->assertEquals(1999, $films[0]->getYear());
+    }
+
+    public function testGetFilmsFromSearchResults() {
+        $result = self::$jinni->_getFilmsFromSearchResults(self::$searchResultsPage);
+
+        $this->assertTrue(count($result) == 22);
+
+        $this->assertEquals($result[0]['extendedTitle'], 'The Matrix');
     }
 }
