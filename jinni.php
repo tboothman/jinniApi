@@ -112,11 +112,20 @@ class jinni {
                 continue;
             }
 
+            if (0 === preg_match('@<img src="http://media.jinni.com/(tv|movie|no-image)/[^/]+/[^"]+" alt="" style="" class="stripContentImage"@', $filmSection, $contentTypeMatches)) {
+                continue;
+            }
+
             $films[] = $film = new film($this->http);
             $film->setUrlName($matches[1]);
             $film->setName(htmlspecialchars_decode($matches[2]));
             $film->setRating($ratingMatches[1]);
             $film->setFilmId($filmIdMatches[1]);
+            if ($contentTypeMatches[1] == 'movie') {
+                $film->setContentType(\jinni\film::CONTENT_FILM);
+            } elseif ($contentTypeMatches[1] == 'tv') {
+                $film->setContentType(\jinni\film::CONTENT_TV);
+            }
         }
 
         return $films;

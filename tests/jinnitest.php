@@ -32,37 +32,42 @@ class jinnitest extends PHPUnit_Framework_TestCase {
         
         $films = self::$jinni->_getFilmsFromRatingsPage(self::$ratingsPage);
 
-        $this->assertTrue(count($films) == 50);
+        $this->assertTrue(count($films) == 50, "Only ".count($films)." were matched");
 
         //no Icon / good / punctuation
         $this->assertEquals("lifes-too-short", $films[0]->urlName);
         $this->assertEquals("Life's Too Short", $films[0]->getName());
         $this->assertEquals(7, $films[0]->getRating());
         $this->assertEquals(37588, $films[0]->getFilmId());
+        $this->assertEquals('TvSeries', $films[0]->getContentType());
 
         // trash icon / Poor
         $this->assertEquals("john-carter", $films[1]->urlName);
         $this->assertEquals("John Carter", $films[1]->getName());
         $this->assertEquals(3, $films[1]->getRating());
         $this->assertEquals(42469, $films[1]->getFilmId());
+        $this->assertEquals('FeatureFilm', $films[1]->getContentType());
 
         // oscar icon / Great
         $this->assertEquals("chronicle", $films[2]->urlName);
         $this->assertEquals("Chronicle", $films[2]->getName());
         $this->assertEquals(8, $films[2]->getRating());
         $this->assertEquals(42750, $films[2]->getFilmId());
+        $this->assertEquals('FeatureFilm', $films[2]->getContentType());
 
         // Odd url / tv show
         $this->assertEquals("5-2010", $films[3]->urlName);
         $this->assertEquals("V", $films[3]->getName());
         $this->assertEquals(6, $films[3]->getRating());
         $this->assertEquals(21877, $films[3]->getFilmId());
+        $this->assertEquals('TvSeries', $films[3]->getContentType());
 
         // long name (has ... in title on page)
         $this->assertEquals("captain-america-the-first-avenger", $films[48]->urlName);
         $this->assertEquals("Captain America: The First Avenger", $films[48]->getName());
         $this->assertEquals(6, $films[48]->getRating());
         $this->assertEquals(30932, $films[48]->getFilmId());
+        $this->assertEquals('FeatureFilm', $films[48]->getContentType());
     }
 
     public function testgetNextRatingPagePostData() {

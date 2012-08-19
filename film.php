@@ -111,6 +111,10 @@ class film {
         $this->contentType = $type;
     }
 
+    public function getContentType() {
+        return $this->contentType;
+    }
+
     public function getImdb() {
         if (!isset($this->imdb)) {
             $this->getInfo();
