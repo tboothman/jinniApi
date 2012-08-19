@@ -56,6 +56,11 @@ class http {
         return $page;
     }
 
+    /**
+     * Create a cache folder for storing the result of getting $path
+     * @param string $path
+     * @return string the location to store the result
+     */
     protected function createCachePath($path) {
         $path = trim($path,'/');
         $parts = explode('/', $path);
@@ -89,7 +94,7 @@ class http {
      *
      * **AjaxController**
      * findSuggestionsWithFilters (term,
-     *  {contentTypeFilter:FeatureFilm|TvSeries})=> @see parseSearchResults()
+     *  {contentTypeFilter:FeatureFilm|TvSeries})=> @see parseSearchSuggestionResults()
      *
      * **AjaxUserRecommendationsBean**
      * getRecommendations      Returns tons of data about all your recommended films/shows
@@ -113,7 +118,7 @@ class http {
      * @param string $searchStr
      * @param string|null $type FeatureFilm|TvSeries|ShortFilm @see film::validContentType()
      * @return array()
-     * @see parseSearchResults()
+     * @see parseSearchSuggestionResults()
      */
     public function searchSuggestions($searchStr, $type = null) {
         if (null !== $type && !film::validContentType($type)) {

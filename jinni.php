@@ -10,9 +10,11 @@ class jinni {
      * @var http
      */
     public $http;
+    protected $username;
 
     public function __construct($username, $cacheFolder) {
         $this->http = new http($username, $cacheFolder);
+        $this->username = $username;
     }
 
     /**
@@ -58,7 +60,7 @@ class jinni {
      * Search for a string on jinni optionally fitered by $type
      * This searches using the main site search.
      * It gets imdb numbers in search results but is slower than jinni::search.
-     * Use if IMDB numbers are wanted but no other info from he main film page
+     * Use if IMDB numbers are wanted but no other info from the main film page
      * @param str $searchStr
      * @param string|null $type
      * @see film::validContentType()
@@ -112,7 +114,7 @@ class jinni {
 
             $films[] = $film = new film($this->http);
             $film->setUrlName($matches[1]);
-            $film->setName($matches[2]);
+            $film->setName(htmlspecialchars_decode($matches[2]));
             $film->setRating($ratingMatches[1]);
             $film->setFilmId($filmIdMatches[1]);
         }
