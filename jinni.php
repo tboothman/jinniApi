@@ -1,9 +1,9 @@
 <?php
 namespace jinni;
 
-require_once "film.php";
-require_once "http.php";
-require_once "jsParser.php";
+require_once __DIR__."/film.php";
+require_once __DIR__."/http.php";
+require_once __DIR__."/jsParser.php";
 
 class jinni {
     /**
