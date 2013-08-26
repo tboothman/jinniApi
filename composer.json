@@ -1,0 +1,6 @@
+{
+    "name": "tboothman/jinni",
+    "autoload": {
+        "psr-0": {"jinni\\": "/../"}
+    }
+}
