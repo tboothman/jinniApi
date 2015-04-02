@@ -21,16 +21,18 @@ class jinni {
      * Get every rating on $this->username's account
      * @return array of \jinni\film
      */
-    public function getRatings() {
+    public function getRatings($limitPages = NULL, $beginPage = 1) {
         $films = array();
         //get ratings pages
-        $page = $this->http->getPage('/user/'.urlencode($this->username).'/ratings/');
+        $page = $this->http->getPage('/user/'.urlencode($this->username).'/ratings?pagingSlider_index='.$beginPage);
         //create film classes for each one, give it its rating
         $films = $this->getFilmsFromRatingsPage($page);
-
-        while (false !== ($postData = $this->getNextRatingPagePostData($page))) {
-            $page = $this->http->getPage('/user/'.urlencode($this->username).'/ratings/', $postData);
+        
+        $pageCount = 1;
+        while (($limitPages == NULL || $limitPages > $pageCount) && (false !== ($nextPageNumber = $this->getNextRatingPageNumber($page)))) {
+            $page = $this->http->getPage('/user/'.urlencode($this->username).'/ratings?pagingSlider_index='.$nextPageNumber);
             $films = array_merge($films, $this->getFilmsFromRatingsPage($page));
+            $pageCount++;
         }
         return $films;
     }
@@ -97,22 +99,31 @@ class jinni {
 
     protected function getFilmsFromRatingsPage($page) {
         $films = array();
-        $filmSections = explode('<div id="ratingStrip', $page);
+        $filmSections = explode('<div class="ratings_cell5">', $page);
         array_shift($films);
         foreach ($filmSections as $filmSection) {
-            if (0 === preg_match('@<a class="" href="/movies/([^/]+)/" title="([^"]+)" onclick=""><span class="title">[^<]+</span>@', $filmSection, $matches)) {
+            // URL name and film name
+            if (0 === preg_match('@<a href="http://www.jinni.com/movies/([^/]+)/" class="ratings_link" onclick="">([^"]+)</a>@', $filmSection, $matches)) {
                 continue;
             }
             
-            if (0 === preg_match('@<span class="digitRate" id="digitalRate\[\d+\]">(\d+)/10@', $filmSection, $ratingMatches)) {
+            // Rating
+            if (0 === preg_match('@RatedORSuggestedValue: (\d+)@', $filmSection, $ratingMatches)) {
+                continue;
+            }
+            
+            // Rating Date
+            if (0 === preg_match('@<div class="ratings_cell4"><span[^>]+>(\d+/\d+/\d+)<@', $filmSection, $ratingDateMatches)) {
                 continue;
             }
 
-            if (0 === preg_match('@myRatingsFuncs.removeRatingStrip\(\'ratingStrip\[\d+\]\',(\d+)\);@', $filmSection, $filmIdMatches)) {
+            // Film ID
+            if (0 === preg_match('@contentId: "(\d+)@', $filmSection, $filmIdMatches)) {
                 continue;
             }
 
-            if (0 === preg_match('@<img src="http://media.jinni.com/(tv|movie|no-image)/[^/]+/[^"]+" alt="" style="" class="stripContentImage"@', $filmSection, $contentTypeMatches)) {
+            // Content type (Movie/TV)
+            if (0 === preg_match('@<img src="(http://media1.jinni.com/(tv|movie|no-image)/[^/]+/[^"]+)"@', $filmSection, $contentTypeMatches)) {
                 continue;
             }
 
@@ -121,9 +132,9 @@ class jinni {
             $film->setName(htmlspecialchars_decode($matches[2]));
             $film->setRating($ratingMatches[1]);
             $film->setFilmId($filmIdMatches[1]);
-            if ($contentTypeMatches[1] == 'movie') {
+            if ($contentTypeMatches[2] == 'movie') {
                 $film->setContentType(\jinni\film::CONTENT_FILM);
-            } elseif ($contentTypeMatches[1] == 'tv') {
+            } elseif ($contentTypeMatches[2] == 'tv') {
                 $film->setContentType(\jinni\film::CONTENT_TV);
             }
         }
@@ -131,31 +142,17 @@ class jinni {
         return $films;
     }
 
-    protected function getNextRatingPagePostData($page) {
+    protected function getNextRatingPageNumber($page) {
 
-        if (false === strpos($page, 'class="next_rev"')) {
+        if (0 == preg_match('@pagingSlider\.addPage\(\d+,false\);[\n|\t]+\$\(document\)@', $page, $matches)) {
             return false;
         }
 
-        if (0 == preg_match('@<input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="(j_id\d+:j_id\d+)" />@', $page, $matches)) {
+        if (0 == preg_match('@<input type="hidden" name="pagingSlider_index" id="pagingSlider_index" value="(\d+)" />@', $page, $matches)) {
             return false;
         }
 
-        $viewState = $matches[1];
-
-        if (0 == preg_match('@<td class="activePage"><a href="#" onclick="if\(typeof jsfcljs == \'function\'\)\{jsfcljs\(document.forms\[\'userRatingForm\'\],\'userRatingForm:j_id(\d+)idx(\d+)@', $page, $matches)) {
-            return false;
-        }
-
-        $id = $matches[1];
-        $page = $matches[2] + 1;
-
-        return array(
-            'javax.faces.ViewState' => $viewState,
-            'userRatingForm'        => 'userRatingForm',
-            "userRatingForm:j_id$id" => "idx$page",
-            "userRatingForm:j_id{$id}idx$page" =>	"userRatingForm:j_id{$id}idx$page"
-        );
+        return $matches[1] + 1;
     }
 
     /*

@@ -131,8 +131,8 @@ class film {
         if (preg_match('@"http://www.imdb.com/title/tt(\d+)"@', $content, $matches)) {
             $this->imdb = (int)$matches[1];
         }
-        if (preg_match("@<title>(.+) \((\d{4})\) - (?:Movie|TV)\s+</title>@i", $content, $matches)) {
-            $this->setYear($matches[2]);
+        if (preg_match("@<title>.+, (\d{4})<\/title>@", $content, $matches)) {
+            $this->setYear($matches[1]);
         }
     }
 }
