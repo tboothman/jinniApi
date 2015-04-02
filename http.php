@@ -176,7 +176,7 @@ class http {
     }
 
     protected function parseSearchSuggestionResults($str) {
-        if (0 == preg_match("@dwr.engine._remoteHandleCallback\(\'\d+\',\'\d+\',\{criteria:s0,results:([^,]+),@", $str, $matches)) {
+        if (0 == preg_match("@dwr.engine._remoteHandleCallback\(\'\d+\',\'\d+\',\{results:([^,]+),@", $str, $matches)) {
             throw new \Exception('Could not parse API result');
         }
 
