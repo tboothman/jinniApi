@@ -103,7 +103,7 @@ class jinni {
         array_shift($films);
         foreach ($filmSections as $filmSection) {
             // URL name and film name
-            if (0 === preg_match('@<a href="http://www.jinni.com/movies/([^/]+)/" class="ratings_link" onclick="">([^"]+)</a>@', $filmSection, $matches)) {
+            if (0 === preg_match('@<div class="ratings_cell2" title="([^"]+)">[\s\n\r]+<a href="http://www.jinni.com/(?:movies|tv)/([^/]+)/" class="ratings_link" onclick="">([^"]+)</a>@', $filmSection, $matches)) {
                 continue;
             }
             
@@ -128,8 +128,8 @@ class jinni {
             }
 
             $films[] = $film = new film($this->http);
-            $film->setUrlName($matches[1]);
-            $film->setName(htmlspecialchars_decode($matches[2]));
+            $film->setUrlName($matches[2]);
+            $film->setName(htmlspecialchars_decode($matches[1]));
             $film->setRating($ratingMatches[1]);
             $film->setFilmId($filmIdMatches[1]);
             if ($contentTypeMatches[2] == 'movie') {

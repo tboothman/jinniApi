@@ -4,7 +4,7 @@ namespace jinni;
 class film {
     const CONTENT_FILM      = 'FeatureFilm';
     const CONTENT_TV        = 'TvSeries';
-    const CONTENT_SHORTFILM = 'ShortFilm';
+    const CONTENT_SHORTFILM = 'Short';
     /**
      * @var http
      */

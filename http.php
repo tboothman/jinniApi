@@ -180,14 +180,15 @@ class http {
             throw new \Exception('Could not parse API result');
         }
 
-        preg_match_all("@s\d+.categoryType=null;s\d+.entityType='Title';s\d+.id=\"(\d+)\";s\d+.name=\"([^\"]+)\";s\d+.popularity=null;s\d+.titleType=\'[A-Z,a-z]+';s\d+.year=(\d+);@", $str, $matches, PREG_SET_ORDER);
+        preg_match_all("@s\d+.categoryType=null;s\d+.entityType='Title';s\d+.id=\"(\d+)\";s\d+.name=\"([^\"]+)\";s\d+.popularity=null;s\d+.titleType=\'([A-Z,a-z]+)';s\d+.year=(\d+);@", $str, $matches, PREG_SET_ORDER);
 
         $results = array();
         foreach ($matches as $match) {
             $results[] = array(
                 'id' => $match[1],
                 'name' => stripslashes($match[2]),
-                'year' => $match[3]
+                'year' => $match[4],
+                'contentType' => $match[3]
             );
         }
         return $results;

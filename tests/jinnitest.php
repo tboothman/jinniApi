@@ -5,8 +5,8 @@ class testJinni extends \jinni\jinni {
     function _getFilmsFromRatingsPage($page) {
         return $this->getFilmsFromRatingsPage($page);
     }
-    function _getNextRatingPagePostData($page) {
-        return $this->getNextRatingPagePostData($page);
+    function _getNextRatingPageNumber($page) {
+        return $this->getNextRatingPageNumber($page);
     }
     function _getFilmsFromSearchResults($page) {
         return $this->getFilmsFromSearchResults($page);
@@ -32,57 +32,54 @@ class jinnitest extends PHPUnit_Framework_TestCase {
         
         $films = self::$jinni->_getFilmsFromRatingsPage(self::$ratingsPage);
 
-        $this->assertTrue(count($films) == 50, "Only ".count($films)." were matched");
+        //print_r($films);die();
 
-        //no Icon / good / punctuation
-        $this->assertEquals("lifes-too-short", $films[0]->urlName);
-        $this->assertEquals("Life's Too Short", $films[0]->getName());
-        $this->assertEquals(7, $films[0]->getRating());
-        $this->assertEquals(37588, $films[0]->getFilmId());
-        $this->assertEquals('TvSeries', $films[0]->getContentType());
-
-        // trash icon / Poor
-        $this->assertEquals("john-carter", $films[1]->urlName);
-        $this->assertEquals("John Carter", $films[1]->getName());
-        $this->assertEquals(3, $films[1]->getRating());
-        $this->assertEquals(42469, $films[1]->getFilmId());
-        $this->assertEquals('FeatureFilm', $films[1]->getContentType());
-
-        // oscar icon / Great
-        $this->assertEquals("chronicle", $films[2]->urlName);
-        $this->assertEquals("Chronicle", $films[2]->getName());
-        $this->assertEquals(8, $films[2]->getRating());
-        $this->assertEquals(42750, $films[2]->getFilmId());
-        $this->assertEquals('FeatureFilm', $films[2]->getContentType());
-
-        // Odd url / tv show
-        $this->assertEquals("5-2010", $films[3]->urlName);
-        $this->assertEquals("V", $films[3]->getName());
-        $this->assertEquals(6, $films[3]->getRating());
-        $this->assertEquals(21877, $films[3]->getFilmId());
-        $this->assertEquals('TvSeries', $films[3]->getContentType());
+        $this->assertTrue(count($films) == 20, "Only ".count($films)." were matched");
 
         // long name (has ... in title on page)
-        $this->assertEquals("captain-america-the-first-avenger", $films[48]->urlName);
-        $this->assertEquals("Captain America: The First Avenger", $films[48]->getName());
-        $this->assertEquals(6, $films[48]->getRating());
-        $this->assertEquals(30932, $films[48]->getFilmId());
-        $this->assertEquals('FeatureFilm', $films[48]->getContentType());
+        $this->assertEquals("the-greatest-movie-ever-sold", $films[3]->urlName);
+        $this->assertEquals("The Greatest Movie Ever Sold", $films[3]->getName());
+        $this->assertEquals(7, $films[3]->getRating());
+        $this->assertEquals(34470, $films[3]->getFilmId());
+        $this->assertEquals('FeatureFilm', $films[3]->getContentType());
+
+        //no Icon / good / punctuation
+        $this->assertEquals("lifes-too-short", $films[10]->urlName);
+        $this->assertEquals("Life's Too Short", $films[10]->getName());
+        $this->assertEquals(7, $films[10]->getRating());
+        $this->assertEquals(37588, $films[10]->getFilmId());
+        $this->assertEquals('TvSeries', $films[10]->getContentType());
+
+        // trash icon / Poor
+        $this->assertEquals("john-carter", $films[17]->urlName);
+        $this->assertEquals("John Carter", $films[17]->getName());
+        $this->assertEquals(3, $films[17]->getRating());
+        $this->assertEquals(42469, $films[17]->getFilmId());
+        $this->assertEquals('FeatureFilm', $films[17]->getContentType());
+
+        // oscar icon / Great
+        $this->assertEquals("chronicle", $films[18]->urlName);
+        $this->assertEquals("Chronicle", $films[18]->getName());
+        $this->assertEquals(8, $films[18]->getRating());
+        $this->assertEquals(42750, $films[18]->getFilmId());
+        $this->assertEquals('FeatureFilm', $films[18]->getContentType());
+
+        // Odd url / tv show
+        $this->assertEquals("5-2010", $films[19]->urlName);
+        $this->assertEquals("V", $films[19]->getName());
+        $this->assertEquals(6, $films[19]->getRating());
+        $this->assertEquals(21877, $films[19]->getFilmId());
+        $this->assertEquals('TvSeries', $films[19]->getContentType());
     }
 
-    public function testgetNextRatingPagePostData() {
-        $postData = self::$jinni->_getNextRatingPagePostData(self::$ratingsPage);
-        $this->assertEquals(array(
-            'javax.faces.ViewState' => 'j_id43285:j_id43286',
-            'userRatingForm'        => 'userRatingForm',
-            "userRatingForm:j_id269" => "idx2",
-            "userRatingForm:j_id269idx2" =>	"userRatingForm:j_id269idx2"
-        ), $postData);
+    public function testgetNextRatingPageNumber() {
+        $pageNum = self::$jinni->_getNextRatingPageNumber(self::$ratingsPage);
+        $this->assertEquals(6, $pageNum);
     }
 
-    public function testFinalRatingPagePostData() {
-        $postData = self::$jinni->_getNextRatingPagePostData(self::$finalRatingsPage);
-        $this->assertEquals(false, $postData);
+    public function testFinalRatingPagePostNumber() {
+        $pageNum = self::$jinni->_getNextRatingPageNumber(self::$finalRatingsPage);
+        $this->assertEquals(false, $pageNum);
     }
 
     public function testSearch2() {
