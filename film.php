@@ -38,7 +38,7 @@ class film {
 
     public function rate($rating) {
         //callCount=1 page=/movies/the-corporation/ httpSessionId=1C3514898A5FED51780407C569A6316E.web2_node3 scriptSessionId=3C675DDBB02222BE8CB51E2415259E99676 c0-scriptName=AjaxUserRatingBean c0-methodName=submiteContentUserRating c0-id=0 c0-param0=number:4060 c0-param1=number:7 batchId=0
-        $response = $this->http->apiCall('AjaxUserRatingBean', 'submiteContentUserRating', array($this->getFilmId(), $rating));
+        $response = $this->http->apiCall('AjaxUserRatingBean', 'submitContentUserRating', array($this->getFilmId(), $rating));
 
         if (false === strpos($response, 'Thank you for rating')) {
             throw new \Exception('Invalid response from server');

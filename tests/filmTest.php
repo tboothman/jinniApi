@@ -89,7 +89,7 @@ dwr.engine._remoteHandleCallback('0','0',{likelyOrNotInterested:null,rate:9.0,ra
 'httpSessionId=9C7337856936A4C7F9EBC3FB1EF542E0.web1_node1'."\n".
 'scriptSessionId=3C675DDBB02222BE8CB51E2415259E99676'."\n".
 'c0-scriptName=AjaxUserRatingBean'."\n".
-'c0-methodName=submiteContentUserRating'."\n".
+'c0-methodName=submitContentUserRating'."\n".
 'c0-id=0'."\n".
 'c0-param0=number:37588'."\n".
 'c0-param1=number:7'."\n", false, false, '//#DWR-INSERT
