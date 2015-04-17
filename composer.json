@@ -3,6 +3,6 @@
     "description": "Jinni library",
     "license": "GPL-3.0",
     "autoload": {
-        "classmap": [""]
+        "psr-0": {"jinni\\": "/../"}
     }
 }
