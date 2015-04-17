@@ -3,7 +3,7 @@ namespace jinni;
 
 require_once __DIR__."/film.php";
 require_once __DIR__."/http.php";
-require_once __DIR__."/jsParser.php";
+require_once __DIR__."/JsParser.php";
 
 /**
  * Interface for interacting with Jinni.
@@ -203,7 +203,7 @@ class jinni {
         foreach ($films as $film) {
             $film = trim(trim($film),';');
 
-            $filmObj = \jsParser::doParse($film);
+            $filmObj = \JsParser::doParse($film);
 
             if ($filmObj) {
                 $results[] = $filmObj;

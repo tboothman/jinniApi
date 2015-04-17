@@ -1,6 +1,6 @@
 <?php
 class JsParserException extends Exception {}
-class jsParser {
+class JsParser {
 
     /**
      * Decode a JSON / javascript variable definition into a PHP equivalent
@@ -95,7 +95,6 @@ class jsParser {
                 throw new JsParserException("Unexpected token '".$str[0]."' expecting object key");
             }
             $str = ltrim(substr($str, strlen($matches[0])));
-            $key = $matches[1];
 
             $ret[$matches[1]] = self::parse($str);
 
