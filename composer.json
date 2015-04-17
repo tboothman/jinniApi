@@ -1,8 +1,8 @@
 {
     "name": "tboothman/jinni",
     "description": "Jinni library",
-    "licence": "GPL-3.0",
+    "license": "GPL-3.0",
     "autoload": {
-        "psr-0": {"jinni\\": "/../"}
+        "classmap": [""]
     }
 }
