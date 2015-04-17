@@ -1,6 +1,10 @@
 <?php
 namespace jinni;
 
+/**
+ * A model to represent a film on Jinni.
+ * This is initialised internally
+ */
 class film {
     const CONTENT_FILM      = 'FeatureFilm';
     const CONTENT_TV        = 'TvSeries';

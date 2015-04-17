@@ -1,6 +1,9 @@
 <?php
 namespace jinni;
 
+/**
+ * Class for making HTTP interactions with Jinni.
+ */
 class http {
     protected $username;
     protected $cacheFolder;

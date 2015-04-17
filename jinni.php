@@ -5,6 +5,9 @@ require_once __DIR__."/film.php";
 require_once __DIR__."/http.php";
 require_once __DIR__."/jsParser.php";
 
+/**
+ * Interface for interacting with Jinni.
+ */
 class jinni {
     /**
      * @var http
@@ -12,6 +15,10 @@ class jinni {
     public $http;
     protected $username;
 
+    /**
+     * @param string $username Your Jinni username
+     * @param string $cacheFolder A directory to store copies of the hmtl for the film pages so they are never retrieved twice
+     */
     public function __construct($username, $cacheFolder) {
         $this->http = new http($username, $cacheFolder);
         $this->username = $username;
@@ -183,7 +190,7 @@ class jinni {
      */
     protected function getFilmsFromSearchResults($page) {
         $results = array();
-        if (false == strpos($page, 'var obj_collageEntry0 =')) {
+        if (false === strpos($page, 'var obj_collageEntry0 =')) {
             return $results;
         }
 
